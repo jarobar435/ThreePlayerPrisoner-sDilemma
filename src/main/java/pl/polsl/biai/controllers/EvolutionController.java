@@ -25,6 +25,7 @@ public class EvolutionController {
         generatePopulation(populationSize);
         evolutionView.confirmPopulationGenerated(populationSize);
         for (int i = 0; i < generationsAmount; ++i) {
+            evolutionView.printGenerationStamp(i+1);
             createGames();
             evolutionView.confirmGamesCreated(evolution.getGames().size());
             playGames();
@@ -101,14 +102,17 @@ public class EvolutionController {
     }
 
     public void updateScores() {
-        for (PrisonerController prisonerController : evolution.getPopulation()) {
-            prisonerController.updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
-            System.out.println("Score: " + prisonerController.getPrisoner().getScore());
+        for(int i = 0; i < evolution.getPopulation().size(); ++i) {
+            evolution.getPopulation().get(i).updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
+            System.out.println("Player " + (i+1) + " score: " + evolution.getPopulation().get(i).getPrisoner().getScore());
         }
+//        for (PrisonerController prisonerController : evolution.getPopulation()) {
+//            prisonerController.updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
+//        }
     }
 
     public int calculateAmountOfPairsWithEachPlayer() {
-        return ((populationSize -2) * (populationSize - 1) / 2);
+        return (populationSize - 2) * (populationSize - 1) / 2;
     }
 
     public void setPopulationSize(int populationSize) {
