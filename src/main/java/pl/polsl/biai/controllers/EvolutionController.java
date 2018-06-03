@@ -4,8 +4,10 @@ import pl.polsl.biai.models.Evolution;
 import pl.polsl.biai.views.EvolutionView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-import org.apache.commons.math3.util.ArithmeticUtils;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 public class EvolutionController {
 
@@ -31,11 +33,34 @@ public class EvolutionController {
             //TODO:
             //sortowanie, znalezienie środkowego, podzielenie arraya na 2 grupy odchyleń standardowych
 
+            ArrayList<PrisonerController> population = evolution.getPopulation();
+            Collections.sort(population);
+            PrisonerController middlePrisoner = population.get(population.size() / 2);
+//            double deviationPlayer = pow(middlePrisoner.getPrisoner().getScore() - calculateAverageOfPopulationScore(population),2);
+            double StandardDeviation = calculateStandardDeviation(population);
+
             //krzyżowanie, mutacja
 
             //evolution.getGames().clear();
             //evolution.getPopulation().clear();
         }
+    }
+
+    private double calculateStandardDeviation(ArrayList<PrisonerController> population) {
+        double average = calculateAverageOfPopulationScore(population);
+        double sum = 0;
+        for (PrisonerController iterator : population) {
+            sum += pow(iterator.getPrisoner().getScore() - average, 2);
+        }
+        return sqrt(sum / population.size());
+    }
+
+    private double calculateAverageOfPopulationScore(ArrayList<PrisonerController> population) {
+        int sum = 0;
+        for (PrisonerController iterator : population) {
+            sum += iterator.getPrisoner().getScore();
+        }
+        return sum / population.size();
     }
 
     public void generatePopulation(int populationSize) {
@@ -69,22 +94,21 @@ public class EvolutionController {
 
     public void playGames() {
         for (int i = 0; i < gamesInPair; ++i) {
-            for(GameController gameController : evolution.getGames()) {
+            for (GameController gameController : evolution.getGames()) {
                 gameController.playGameRound();
             }
         }
     }
 
     public void updateScores() {
-        for(PrisonerController prisonerController : evolution.getPopulation()) {
+        for (PrisonerController prisonerController : evolution.getPopulation()) {
             prisonerController.updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
             System.out.println("Score: " + prisonerController.getPrisoner().getScore());
         }
     }
 
     public int calculateAmountOfPairsWithEachPlayer() {
-        return  (int)(ArithmeticUtils.factorial(populationSize-1) /
-                (ArithmeticUtils.factorial(2) * ArithmeticUtils.factorial(populationSize-3)));
+        return ((populationSize -2) * (populationSize - 1) / 2);
     }
 
     public void setPopulationSize(int populationSize) {

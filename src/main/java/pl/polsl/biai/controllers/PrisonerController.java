@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static pl.polsl.biai.models.Decision.BETRAYED;
 import static pl.polsl.biai.models.Decision.COLLABORATED;
 
-public class PrisonerController {
+public class PrisonerController implements Comparable<PrisonerController>{
 
     private static final SecureRandom secureRandom = new SecureRandom();
 
@@ -75,5 +75,9 @@ public class PrisonerController {
 
     public void updateScore(int divider) {
         prisoner.setScore(prisoner.getScore() / divider);
+    }
+
+    public int compareTo(PrisonerController prisonerController) {
+        return prisoner.getScore() - prisonerController.prisoner.getScore();
     }
 }
