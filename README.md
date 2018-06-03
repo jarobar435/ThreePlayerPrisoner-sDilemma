@@ -4,7 +4,7 @@ Implementation based on rules presented in Zbigniew Michalewicz's book - "Algory
 ## Schemat algorytmu:
 
 - [x] Wybierz populację. Każdemu graczowi przyporządkowuje się losowo łańcuch 521 bitów reprezentujący strategię.
-- [ ] Sprawdź każdego gracza, aby określić jego efektywność. Każdy gracz używa strategii zapisanej w swoim chromosomie aby rozgrywać gry z pozostałymi graczami. Wynik gracza jest średnią ze wszystkich rozegranych przez niego gier.
+- [X] Sprawdź każdego gracza, aby określić jego efektywność. Każdy gracz używa strategii zapisanej w swoim chromosomie aby rozgrywać gry z pozostałymi graczami. Wynik gracza jest średnią ze wszystkich rozegranych przez niego gier.
 - [ ] Wybierz graczy do rozmnożenia. Gracz ze średnim wynikiem dostaje jednego partnera do skojarzenia, gracz z wynikiem o jedno odchylenie standardowe lepszym dostaje dwóch partnerów, a gracz z wynikiem o jedno odchylenie standardowe gorszym od średniego nie dostaje żadnego partnera.
 - [ ] Wygrywający gracze są losowo kojarzeni w celu utworzenia dwóch potomków z jednej pary. Strategia potomków jest tworzona ze strategii rodziców. Do tego służą dwa operatory genetyczne - krzyżowanie i mutacja.
 
