@@ -44,19 +44,21 @@ public class PrisonerController implements Comparable<PrisonerController>{
     }
 
     public Decision determineDecision() {
+        int indexStep = 512;
         int indexOfDecisionTop = 511;
         int indexOfDecisionBottom = 0;
         for(int i = 0; i < 9; ++i) {
+            indexStep/=2;
             if(i == 8) {
-                if(getPrisoner().getLastThreeMoves().get(8) == COLLABORATED)
-                    return getPrisoner().getStrategy().get(indexOfDecisionTop);
+                if(prisoner.getLastThreeMoves().get(8) == COLLABORATED)
+                    return prisoner.getStrategy().get(indexOfDecisionTop);
                 else
-                    return getPrisoner().getStrategy().get(indexOfDecisionBottom);
+                    return prisoner.getStrategy().get(indexOfDecisionBottom);
             }
-            if(getPrisoner().getLastThreeMoves().get(i) == COLLABORATED)
-                indexOfDecisionTop = (indexOfDecisionTop % 2 == 0) ? (indexOfDecisionTop / 2) : (indexOfDecisionTop / 2 + 1);
+            if(prisoner.getLastThreeMoves().get(i) == COLLABORATED)
+                indexOfDecisionBottom += indexStep;
             else
-                indexOfDecisionBottom = (indexOfDecisionBottom % 2 == 0) ? (indexOfDecisionBottom / 2) : (indexOfDecisionBottom / 2 + 1);
+                indexOfDecisionTop -= indexStep;
 
         }
         return BETRAYED; //never reached
@@ -69,7 +71,7 @@ public class PrisonerController implements Comparable<PrisonerController>{
         prisoner.setLastThreeMoves(newList);
     }
 
-    public void addScore(int score) {
+    public void addScore(double score) {
         prisoner.addScore(score);
     }
 
@@ -78,6 +80,10 @@ public class PrisonerController implements Comparable<PrisonerController>{
     }
 
     public int compareTo(PrisonerController prisonerController) {
-        return prisoner.getScore() - prisonerController.prisoner.getScore();
+        if(this.prisoner.getScore() < prisonerController.getPrisoner().getScore())
+            return -1;
+        else if(this.prisoner.getScore() > prisonerController.getPrisoner().getScore())
+            return 1;
+        return 0;
     }
 }

@@ -7,7 +7,7 @@ public class Prisoner {
 	private ArrayList<Decision> lastThreeMoves = new ArrayList<Decision>(9);
 	private ArrayList<Decision> strategy = new ArrayList<Decision>(512);
 
-	private int score = 0;
+	private double score = 0;
 
 	public void addMove(Decision move) {
 		lastThreeMoves.add(move);
@@ -29,15 +29,15 @@ public class Prisoner {
 		return strategy;
 	}
 
-	public int getScore() {
+	public double getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
 
-	public void addScore(int score) {
+	public void addScore(double score) {
 		this.score += score;
 	}
 }

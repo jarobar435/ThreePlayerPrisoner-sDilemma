@@ -105,7 +105,7 @@ public class EvolutionController {
     public void updateScores() {
         for(int i = 0; i < evolution.getPopulation().size(); ++i) {
             evolution.getPopulation().get(i).updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
-            System.out.println("Player " + (i+1) + " score: " + evolution.getPopulation().get(i).getPrisoner().getScore());
+            System.out.println("Player " + (i+1) + " avg. score: " + evolution.getPopulation().get(i).getPrisoner().getScore());
         }
 //        for (PrisonerController prisonerController : evolution.getPopulation()) {
 //            prisonerController.updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
