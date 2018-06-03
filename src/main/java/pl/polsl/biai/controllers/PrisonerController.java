@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static pl.polsl.biai.models.Decision.BETRAYED;
 import static pl.polsl.biai.models.Decision.COLLABORATED;
 
-public class PrisonerController implements Comparable<PrisonerController>{
+public class PrisonerController implements Comparable<PrisonerController> {
 
     private static final SecureRandom secureRandom = new SecureRandom();
 
@@ -22,7 +22,6 @@ public class PrisonerController implements Comparable<PrisonerController>{
     public PrisonerController() {
         generateLastThreeMoves();
         generateStrategy();
-        //prisonerView.printLastMoves(prisoner.getLastThreeMoves());
     }
 
     public void generateLastThreeMoves() {
@@ -34,7 +33,7 @@ public class PrisonerController implements Comparable<PrisonerController>{
     }
 
     public void generateRandomDecisions(ArrayList<Decision> arr, int amount) {
-        for(int i = 0; i < amount; ++i) {
+        for (int i = 0; i < amount; ++i) {
             arr.add(Decision.values()[secureRandom.nextInt(Decision.values().length)]);
         }
     }
@@ -47,15 +46,15 @@ public class PrisonerController implements Comparable<PrisonerController>{
         int indexStep = 512;
         int indexOfDecisionTop = 511;
         int indexOfDecisionBottom = 0;
-        for(int i = 0; i < 9; ++i) {
-            indexStep/=2;
-            if(i == 8) {
-                if(prisoner.getLastThreeMoves().get(8) == COLLABORATED)
+        for (int i = 0; i < 9; ++i) {
+            indexStep /= 2;
+            if (i == 8) {
+                if (prisoner.getLastThreeMoves().get(8) == COLLABORATED)
                     return prisoner.getStrategy().get(indexOfDecisionTop);
                 else
                     return prisoner.getStrategy().get(indexOfDecisionBottom);
             }
-            if(prisoner.getLastThreeMoves().get(i) == COLLABORATED)
+            if (prisoner.getLastThreeMoves().get(i) == COLLABORATED)
                 indexOfDecisionBottom += indexStep;
             else
                 indexOfDecisionTop -= indexStep;
@@ -72,18 +71,33 @@ public class PrisonerController implements Comparable<PrisonerController>{
     }
 
     public void addScore(double score) {
-        prisoner.addScore(score);
+        prisoner.setScore(prisoner.getScore() + score);
     }
 
     public void updateScore(int divider) {
         prisoner.setScore(prisoner.getScore() / divider);
     }
 
+    public void setPrisonerCrossoverPartnersAmount(int partnersAmount) {
+        prisoner.setCrossoverPartnersAmount(partnersAmount);
+    }
+
+    public boolean checkIfWaitingForCrossoverPartner() {
+        if (prisoner.getCrossoverPartnersAmount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public void decrementPrisonerCrossoverPartnersAmount() {
+        prisoner.setCrossoverPartnersAmount(prisoner.getCrossoverPartnersAmount() - 1);
+    }
+
     public int compareTo(PrisonerController prisonerController) {
-        if(this.prisoner.getScore() < prisonerController.getPrisoner().getScore())
-            return -1;
-        else if(this.prisoner.getScore() > prisonerController.getPrisoner().getScore())
+        if (prisoner.getScore() < prisonerController.getPrisoner().getScore())
             return 1;
+        else if (prisoner.getScore() > prisonerController.getPrisoner().getScore())
+            return -1;
         return 0;
     }
 }

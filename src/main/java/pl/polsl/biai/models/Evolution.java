@@ -22,6 +22,10 @@ public class Evolution {
         return population;
     }
 
+    public void setPopulation(ArrayList<PrisonerController> population) {
+        this.population = population;
+    }
+
     public ArrayList<GameController> getGames() {
         return games;
     }

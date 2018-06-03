@@ -1,8 +1,10 @@
 package pl.polsl.biai.controllers;
 
 import pl.polsl.biai.models.Evolution;
+import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.EvolutionView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,57 +27,71 @@ public class EvolutionController {
         generatePopulation(populationSize);
         evolutionView.confirmPopulationGenerated(populationSize);
         for (int i = 0; i < generationsAmount; ++i) {
-            evolutionView.printGenerationStamp(i+1);
+            evolutionView.printGenerationStamp(i + 1);
             createGames();
-            evolutionView.confirmGamesCreated(evolution.getGames().size());
+            evolutionView.confirmGamePairsCreated(evolution.getGames().size());
             playGames();
+            evolutionView.confirmGamesCompleted(evolution.getGames().size() * gamesInPair);
+            clearGamesList();
             updateScores();
-
-            ArrayList<PrisonerController> population = evolution.getPopulation();
-            Collections.sort(population);
-            PrisonerController middlePrisoner = population.get(population.size() / 2);
-//            double deviationPlayer = pow(middlePrisoner.getPrisoner().getScore() - calculateAverageOfPopulationScore(population),2);
-            double StandardDeviation = calculateStandardDeviation(population);
+            evolutionView.showScoresAfterGeneration(evolution.getPopulation());
+            determineCrossoverPartnersAmountAndSortPopulation();
 
             //krzyżowanie, mutacja
-
-            //evolution.getGames().clear();
-            //evolution.getPopulation().clear();
+            ArrayList<PrisonerController> nextGeneration = new ArrayList<PrisonerController>(populationSize);
+            for (int j = 0; j < populationSize; ) {
+//              nextGeneration.add(
+//                        crossover(evolution.getPopulation().get(i),
+//                                randomlySelectCrossoverPartner(),
+//                                crossoverType,
+//                                mutationMode)
+//              );
+                evolution.getPopulation().get(j).decrementPrisonerCrossoverPartnersAmount();
+                if(!(evolution.getPopulation().get(j).checkIfWaitingForCrossoverPartner())) {
+                    ++j;
+                }
+            }
+            evolution.getPopulation().clear();
+            evolution.setPopulation(nextGeneration);
         }
     }
 
-    private double calculateStandardDeviation(ArrayList<PrisonerController> population) {
-        double average = calculateAverageOfPopulationScore(population);
-        double sum = 0;
-        for (PrisonerController iterator : population) {
-            sum += pow(iterator.getPrisoner().getScore() - average, 2);
-        }
-        return sqrt(sum / population.size());
-    }
+//PrisonerController middlePrisoner = population.get(population.size() / 2);
+//double deviationPlayer = pow(middlePrisoner.getPrisoner().getScore() - calculateAverageOfPopulationScore(population),2);
+//double StandardDeviation = calculateStandardDeviation(population);
 
-    private double calculateAverageOfPopulationScore(ArrayList<PrisonerController> population) {
-        int sum = 0;
-        for (PrisonerController iterator : population) {
-            sum += iterator.getPrisoner().getScore();
-        }
-        return sum / population.size();
-    }
+//    private double calculateStandardDeviation(ArrayList<PrisonerController> population) {
+//        double average = calculateAverageOfPopulationScore(population);
+//        double sum = 0;
+//        for (PrisonerController iterator : population) {
+//            sum += pow(iterator.getPrisoner().getScore() - average, 2);
+//        }
+//        return sqrt(sum / population.size());
+//    }
+//
+//    private double calculateAverageOfPopulationScore(ArrayList<PrisonerController> population) {
+//        int sum = 0;
+//        for (PrisonerController iterator : population) {
+//            sum += iterator.getPrisoner().getScore();
+//        }
+//        return sum / population.size();
+//    }
 
-    public void generatePopulation(int populationSize) {
+    private void generatePopulation(int populationSize) {
         for (int i = 0; i < populationSize; ++i) {
             evolution.addToPopulation(new PrisonerController());
         }
     }
 
-    public void createGames() {
+    private void createGames() {
         int combElemAmount = 3;
         int arraySize = evolution.getPopulation().size();
         ArrayList<PrisonerController> temp = new ArrayList<PrisonerController>();
         pairRecursively(evolution.getPopulation(), temp, 0, arraySize - 1, 0, combElemAmount);
     }
 
-    public void pairRecursively(ArrayList<PrisonerController> population, ArrayList<PrisonerController> temp, int start, int end,
-                                int index, int combElemAmount) {
+    private void pairRecursively(ArrayList<PrisonerController> population, ArrayList<PrisonerController> temp, int start, int end,
+                                 int index, int combElemAmount) {
         if (index == combElemAmount) {
             evolution.addGame(new GameController());
             for (int i = 0; i < combElemAmount; ++i)
@@ -90,10 +106,10 @@ public class EvolutionController {
         }
     }
 
-    public void playGames() {
+    private void playGames() {
         for (int i = 0; i < gamesInPair; ++i) {
-            for(int j = 0; j < evolution.getGames().size(); ++j) {
-                System.out.println("GAME " + (j+1) + ":");
+            for (int j = 0; j < evolution.getGames().size(); ++j) {
+                System.out.println("GAME " + (j + 1) + ":");
                 evolution.getGames().get(j).playGameRound();
             }
 //            for (GameController gameController : evolution.getGames()) {
@@ -102,41 +118,54 @@ public class EvolutionController {
         }
     }
 
-    public void updateScores() {
-        for(int i = 0; i < evolution.getPopulation().size(); ++i) {
-            evolution.getPopulation().get(i).updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
-            System.out.println("Player " + (i+1) + " avg. score: " + evolution.getPopulation().get(i).getPrisoner().getScore());
-        }
-//        for (PrisonerController prisonerController : evolution.getPopulation()) {
-//            prisonerController.updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
-//        }
+    private void clearGamesList() {
+        evolution.getGames().clear();
     }
 
-    public int calculateAmountOfPairsWithEachPlayer() {
+    private void updateScores() {
+        for (PrisonerController prisonerController : evolution.getPopulation()) {
+            prisonerController.updateScore(calculateAmountOfPairsWithEachPlayer() * gamesInPair);
+        }
+    }
+
+    private int calculateAmountOfPairsWithEachPlayer() {
         return (populationSize - 2) * (populationSize - 1) / 2;
     }
 
-    public void setPopulationSize(int populationSize) {
+    private void determineCrossoverPartnersAmountAndSortPopulation() {
+        ArrayList<PrisonerController> population = evolution.getPopulation();
+        Collections.sort(population);
+        int i;
+        for (i = 0; i < Math.round(populationSize / 3.0); ++i) {
+            population.get(i).setPrisonerCrossoverPartnersAmount(2);
+        }
+        for (int j = 2 * i; j < populationSize; ++j) {
+            population.get(j).setPrisonerCrossoverPartnersAmount(1);
+        }
+        evolution.setPopulation(population);
+    }
+
+    void setPopulationSize(int populationSize) {
         this.populationSize = populationSize;
     }
 
-    public void setGamesInPair(int gamesInPair) {
+    void setGamesInPair(int gamesInPair) {
         this.gamesInPair = gamesInPair;
     }
 
-    public void setGenerationsAmount(int generationsAmount) {
+    void setGenerationsAmount(int generationsAmount) {
         this.generationsAmount = generationsAmount;
     }
 
-    public void setCrossoverType(int crossoverType) {
+    void setCrossoverType(int crossoverType) {
         this.crossoverType = crossoverType;
     }
 
-    public void setMutationMode(int mutationMode) {
+    void setMutationMode(int mutationMode) {
         this.mutationMode = mutationMode;
     }
 
-    public void setDuelMode(int duelMode) {
+    void setDuelMode(int duelMode) {
         this.duelMode = duelMode;
     }
 }
