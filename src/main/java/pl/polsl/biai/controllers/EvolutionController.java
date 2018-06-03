@@ -31,9 +31,6 @@ public class EvolutionController {
             playGames();
             updateScores();
 
-            //TODO:
-            //sortowanie, znalezienie środkowego, podzielenie arraya na 2 grupy odchyleń standardowych
-
             ArrayList<PrisonerController> population = evolution.getPopulation();
             Collections.sort(population);
             PrisonerController middlePrisoner = population.get(population.size() / 2);
@@ -83,7 +80,7 @@ public class EvolutionController {
             evolution.addGame(new GameController());
             for (int i = 0; i < combElemAmount; ++i)
                 evolution.getGames().get(evolution.getGames().size() - 1)     //getting last added game
-                        .addGameMember(population.get(i));    //adding members to it
+                        .addGameMember(temp.get(i));    //adding members to it
             return;
         }
 
@@ -95,9 +92,13 @@ public class EvolutionController {
 
     public void playGames() {
         for (int i = 0; i < gamesInPair; ++i) {
-            for (GameController gameController : evolution.getGames()) {
-                gameController.playGameRound();
+            for(int j = 0; j < evolution.getGames().size(); ++j) {
+                System.out.println("GAME " + (j+1) + ":");
+                evolution.getGames().get(j).playGameRound();
             }
+//            for (GameController gameController : evolution.getGames()) {
+//                gameController.playGameRound();
+//            }
         }
     }
 
