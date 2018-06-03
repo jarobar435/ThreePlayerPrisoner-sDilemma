@@ -82,5 +82,12 @@ w których występuje konkretna wartość.
 Ponieważ jeden element jest określony, szukamy (k-1) elementów,
 bez powtórzeń - więc element ten umniejsza zbiór do rozmiaru (n-1).
 
-(n-1)!/(k-1)!(n-k)!
+(n-1)! / (k-1)! * (n-k)!
+```
+Jako, że populacja wielkości 50 osobników generowała wynik silni (63-cyfrowy) przekraczający zakres long-a,  
+uprościliśmy wzór korzystając z naszej stałej liczby k-elementów (więźniów):
+```
+(n-1)! / (3-1)! * (n-3)!
+
+(n-2) * (n-1) / 2
 ```
