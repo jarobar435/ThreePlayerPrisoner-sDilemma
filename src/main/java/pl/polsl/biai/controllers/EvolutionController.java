@@ -35,7 +35,8 @@ public class EvolutionController {
             clearGamesList();
             updateScores();
             evolutionView.showScoresAfterGeneration(evolution.getPopulation());
-            determineCrossoverPartnersAmountAndSortPopulation();
+            sortPopulationDescendingOrder();
+            determineCrossoverPartnersAmount();
 
             //krzyżowanie, mutacja
             ArrayList<PrisonerController> nextGeneration = new ArrayList<PrisonerController>(populationSize);
@@ -107,16 +108,12 @@ public class EvolutionController {
     }
 
     private void playGames() {
-
         for (int j = 0; j < evolution.getGames().size(); ++j) {
             for (int i = 0; i < gamesInPair; ++i) {
                 System.out.println("PAIR " + (j + 1) + " - " + "GAME " + (i + 1));
                 evolution.getGames().get(j).playGameRound();
             }
         }
-//            for (GameController gameController : evolution.getGames()) {
-//                gameController.playGameRound();
-//            }
     }
 
     private void clearGamesList() {
@@ -133,17 +130,20 @@ public class EvolutionController {
         return (populationSize - 2) * (populationSize - 1) / 2;
     }
 
-    private void determineCrossoverPartnersAmountAndSortPopulation() {
+    private void sortPopulationDescendingOrder() {
         ArrayList<PrisonerController> population = evolution.getPopulation();
         Collections.sort(population);
+        evolution.setPopulation(population);
+    }
+
+    private void determineCrossoverPartnersAmount() {
         int i;
         for (i = 0; i < Math.round(populationSize / 3.0); ++i) {
-            population.get(i).setPrisonerCrossoverPartnersAmount(2);
+            evolution.getPopulation().get(i).setPrisonerCrossoverPartnersAmount(2);
         }
         for (int j = 2 * i; j < populationSize; ++j) {
-            population.get(j).setPrisonerCrossoverPartnersAmount(1);
+            evolution.getPopulation().get(j).setPrisonerCrossoverPartnersAmount(1);
         }
-        evolution.setPopulation(population);
     }
 
     void setPopulationSize(int populationSize) {
