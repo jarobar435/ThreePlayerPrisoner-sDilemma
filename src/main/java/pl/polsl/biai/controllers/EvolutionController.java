@@ -47,7 +47,7 @@ public class EvolutionController {
 //                                mutationMode)
 //              );
                 evolution.getPopulation().get(j).decrementPrisonerCrossoverPartnersAmount();
-                if(!(evolution.getPopulation().get(j).checkIfWaitingForCrossoverPartner())) {
+                if (!(evolution.getPopulation().get(j).checkIfWaitingForCrossoverPartner())) {
                     ++j;
                 }
             }
@@ -107,15 +107,16 @@ public class EvolutionController {
     }
 
     private void playGames() {
-        for (int i = 0; i < gamesInPair; ++i) {
-            for (int j = 0; j < evolution.getGames().size(); ++j) {
-                System.out.println("GAME " + (j + 1) + ":");
+
+        for (int j = 0; j < evolution.getGames().size(); ++j) {
+            for (int i = 0; i < gamesInPair; ++i) {
+                System.out.println("PAIR " + (j + 1) + " - " + "GAME " + (i + 1));
                 evolution.getGames().get(j).playGameRound();
             }
+        }
 //            for (GameController gameController : evolution.getGames()) {
 //                gameController.playGameRound();
 //            }
-        }
     }
 
     private void clearGamesList() {
