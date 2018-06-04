@@ -33,6 +33,6 @@ public class MenuController {
         menuView.printDuelQuestion();
         evolutionController.setDuelMode(scanner.nextInt());
         menuView.printDataConfirmation();
-        evolutionController.beginEvolution();
+        evolutionController.runEvolution();
     }
 }

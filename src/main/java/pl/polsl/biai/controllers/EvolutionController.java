@@ -2,18 +2,13 @@ package pl.polsl.biai.controllers;
 
 import pl.polsl.biai.models.Decision;
 import pl.polsl.biai.models.Evolution;
-import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.EvolutionView;
 
-import java.lang.reflect.Array;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
-public class EvolutionController {
+class EvolutionController {
 
     private static final SecureRandom secureRandom = new SecureRandom();
 
@@ -27,9 +22,10 @@ public class EvolutionController {
     private int mutationMode;
     private int duelMode;
 
-    void beginEvolution() {
+    void runEvolution() {
         generatePopulation(populationSize);
         evolutionView.confirmPopulationGenerated(populationSize);
+        preDuelMode();
         for (int i = 0; i < generationsAmount; ++i) {
             evolutionView.printGenerationStamp(i + 1);
             createGames();
@@ -41,23 +37,13 @@ public class EvolutionController {
             evolutionView.showScoresAfterGeneration(evolution.getPopulation());
             sortPopulationDescendingOrder();
             determineCrossoverPartnersAmount();
-
-            ArrayList<PrisonerController> nextGeneration = new ArrayList<PrisonerController>(populationSize);
-            for (int j = 0; j < populationSize; ++j) {
-                nextGeneration.add(
-                        crossover(evolution.getPopulation().get(j),
-                                randomlySelectCrossoverPartner(j))
-                );
-                evolution.getPopulation().get(j).decrementPrisonerCrossoverPartnersAmount();
-            }
-            evolution.getPopulation().clear();
-            evolution.setPopulation(nextGeneration);
-
-            mutate();
+            runCrossover();
+            runMutation();
         }
+        postDuelMode();
     }
 
-    private void mutate() {
+    private void runMutation() {
         if (mutationMode == 1) {
             for (PrisonerController prisonerController : evolution.getPopulation()) {
                 if (secureRandom.nextInt(100) == 0) {
@@ -65,6 +51,19 @@ public class EvolutionController {
                 }
             }
         }
+    }
+
+    private void runCrossover() {
+        ArrayList<PrisonerController> nextGeneration = new ArrayList<PrisonerController>(populationSize);
+        for (int j = 0; j < populationSize; ++j) {
+            nextGeneration.add(
+                    crossover(evolution.getPopulation().get(j),
+                            randomlySelectCrossoverPartner(j))
+            );
+            evolution.getPopulation().get(j).decrementPrisonerCrossoverPartnersAmount();
+        }
+        evolution.getPopulation().clear();
+        evolution.setPopulation(nextGeneration);
     }
 
     private PrisonerController randomlySelectCrossoverPartner(int secondParent) {
@@ -195,6 +194,18 @@ public class EvolutionController {
         }
         for (int j = 2 * i; j < populationSize; ++j, ++i) {
             evolution.getPopulation().get(i).setPrisonerCrossoverPartnersAmount(1);
+        }
+    }
+
+    private void preDuelMode() {
+        if(duelMode == 1) {
+            System.out.println("Duel mode not implemented yet.");
+        }
+    }
+
+    private void postDuelMode() {
+        if(duelMode == 1) {
+            System.out.println("Duel mode not implemented yet.");
         }
     }
 

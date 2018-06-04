@@ -29,13 +29,13 @@ public class MenuView {
 
     public void printCrossoverTypeQuestion() {
         System.out.println(
-                "Crossover type: "
+                "Crossover type: (0 - single point [middle], 1 - multi point [once per 10 genes])"
         );
     }
 
     public void printMutationsModeQuestion() {
         System.out.println(
-                "Mutations (0 - Of, 1 - On): "
+                "Mutations (0 - Off, 1 - On): "
         );
     }
 
