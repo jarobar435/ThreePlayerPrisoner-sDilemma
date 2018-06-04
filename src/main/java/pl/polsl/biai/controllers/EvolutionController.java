@@ -52,12 +52,24 @@ public class EvolutionController {
             }
             evolution.getPopulation().clear();
             evolution.setPopulation(nextGeneration);
+
+            mutate();
+        }
+    }
+
+    private void mutate() {
+        if (mutationMode == 1) {
+            for (PrisonerController prisonerController : evolution.getPopulation()) {
+                if (secureRandom.nextInt(100) == 0) {
+                    prisonerController.changeGene(secureRandom.nextInt(521));
+                }
+            }
         }
     }
 
     private PrisonerController randomlySelectCrossoverPartner(int secondParent) {
         PrisonerController randomPrisoner = new PrisonerController();
-        while (!randomPrisoner.checkIfWaitingForCrossoverPartner() && randomPrisoner!=evolution.getPopulation().get(secondParent)) {
+        while (!randomPrisoner.checkIfWaitingForCrossoverPartner() && randomPrisoner != evolution.getPopulation().get(secondParent)) {
             randomPrisoner = evolution.getPopulation().get(secureRandom.nextInt(evolution.getPopulation().size()));
         }
         return randomPrisoner;
@@ -85,11 +97,11 @@ public class EvolutionController {
     private PrisonerController multiPointCrossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
         PrisonerController child = new PrisonerController();
         for (int i = 0; i < 51; ++i) {
-            child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(i * 10, (i + 1) * 10 - 1)), i * 10);
-            child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList((i + 1) * 10, (i + 2) * 10 - 1)), (i + 1) * 10);
+            child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(i * 10, (i + 1) * 10)), i * 10);
+            child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList((i + 1) * 10, (i + 2) * 10)), (i + 1) * 10);
         }
         //521 is a prime number - loop setting only indexes from 0 to 519; so there is setting the last one
-        child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(520, 520)), 520);
+        child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(520, 521)), 520);
         return child;
     }
 

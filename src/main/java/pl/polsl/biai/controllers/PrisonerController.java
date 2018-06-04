@@ -110,4 +110,16 @@ public class PrisonerController implements Comparable<PrisonerController> {
         chromosome.addAll(fromIndex, chromosomeFragment);
         setChromosome(chromosome);
     }
+
+    void changeGene(int genIndex) {
+        if(getGene(genIndex) == BETRAYED) {
+            injectToChromosome(new ArrayList<Decision>(Arrays.asList(COLLABORATED)), genIndex);
+        }else {
+            injectToChromosome(new ArrayList<Decision>(Arrays.asList(BETRAYED)), genIndex);
+        }
+    }
+
+    private Decision getGene(int genIndex) {
+        return getChromosome().get(genIndex);
+    }
 }
