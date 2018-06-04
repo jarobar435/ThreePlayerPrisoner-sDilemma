@@ -16,7 +16,7 @@ public class MenuController {
         gatherConfigParameters();
     }
 
-    public void gatherConfigParameters() {
+    private void gatherConfigParameters() {
         menuView.printHello();
         //TODO:
         //secure inputs in case of invalid data

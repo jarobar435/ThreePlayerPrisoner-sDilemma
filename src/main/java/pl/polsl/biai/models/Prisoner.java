@@ -22,6 +22,10 @@ public class Prisoner {
         return strategy;
     }
 
+    public void setStrategy(ArrayList<Decision> strategy) {
+        this.strategy = strategy;
+    }
+
     public double getScore() {
         return score;
     }

@@ -4,14 +4,14 @@ public class MenuView {
 
     public void printHello() {
         System.out.println(
-            "Welcome to Three-Player Prisoners Dilemma project.\n" +
-            "Please set up the following parameters."
+                "Welcome to Three-Player Prisoners Dilemma project.\n" +
+                        "Please set up the following parameters."
         );
     }
 
     public void printPopulationSizeQuestion() {
         System.out.println(
-            "Population size: "
+                "Population size: "
         );
     }
 
@@ -23,31 +23,31 @@ public class MenuView {
 
     public void printGenerationsAmountQuestion() {
         System.out.println(
-            "Generations: "
+                "Generations: "
         );
     }
 
     public void printCrossoverTypeQuestion() {
         System.out.println(
-            "Crossover type: "
+                "Crossover type: "
         );
     }
 
     public void printMutationsModeQuestion() {
         System.out.println(
-            "Mutations (0 - Of, 1 - On): "
+                "Mutations (0 - Of, 1 - On): "
         );
     }
 
     public void printDuelQuestion() {
         System.out.println(
-            "Want to play vs algorithm at the beginning and after learning? (0 - No, 1 - Yes) "
+                "Want to play vs algorithm at the beginning and after learning? (0 - No, 1 - Yes) "
         );
     }
 
-   public void printDataConfirmation() {
+    public void printDataConfirmation() {
         System.out.println(
-            "I've received all needed data. Proceeding."
+                "I've received all needed data. Proceeding."
         );
-   }
+    }
 }

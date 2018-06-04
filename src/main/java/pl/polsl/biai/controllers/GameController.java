@@ -9,14 +9,11 @@ public class GameController {
     private Game game = new Game();
     private GameView gameView = new GameView();
 
-    public GameController() {
-    }
-
-    public void addGameMember(PrisonerController gameMember) {
+    void addGameMember(PrisonerController gameMember) {
         game.addGameMember(gameMember);
     }
 
-    public void playGameRound() {
+    void playGameRound() {
         if(game.getGameMembers().get(0).determineDecision() == Decision.BETRAYED) {
             System.out.println("Player1: betrayed");
             if(game.getGameMembers().get(1).determineDecision() == Decision.BETRAYED){
@@ -71,7 +68,7 @@ public class GameController {
         }
     }
 
-    public void setScores(int playerOneScore, int playerTwoScore, int playerThreeScore) {
+    private void setScores(int playerOneScore, int playerTwoScore, int playerThreeScore) {
         game.getGameMembers().get(0).addScore(playerOneScore);
         game.getGameMembers().get(1).addScore(playerTwoScore);
         game.getGameMembers().get(2).addScore(playerThreeScore);
@@ -80,7 +77,7 @@ public class GameController {
     //TODO:
     //ustawiam tutaj ruchy każdemu w tej samej kolejności
     //warto potestować, czy może lepsze wyniki będą jeśli zawsze to pierwszy wynik dotyczyć będzie playera
-    public void setMoves(Decision playerOneDecision, Decision playerTwoDecision, Decision playerThreeDecision) {
+    private void setMoves(Decision playerOneDecision, Decision playerTwoDecision, Decision playerThreeDecision) {
         game.getGameMembers().get(0).addMove(playerOneDecision, playerTwoDecision, playerThreeDecision);
         game.getGameMembers().get(1).addMove(playerOneDecision, playerTwoDecision, playerThreeDecision);
         game.getGameMembers().get(2).addMove(playerOneDecision, playerTwoDecision, playerThreeDecision);

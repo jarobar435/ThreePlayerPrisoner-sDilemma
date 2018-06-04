@@ -4,6 +4,7 @@ import pl.polsl.biai.models.Decision;
 import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.PrisonerView;
 
+import java.lang.reflect.Array;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,20 +20,15 @@ public class PrisonerController implements Comparable<PrisonerController> {
 
     private Prisoner prisoner = new Prisoner();
 
-    public PrisonerController() {
-        generateLastThreeMoves();
-        generateStrategy();
-    }
-
-    public void generateLastThreeMoves() {
+    void generateLastThreeMoves() {
         generateRandomDecisions(prisoner.getLastThreeMoves(), 9);
     }
 
-    public void generateStrategy() {
+    void generateStrategy() {
         generateRandomDecisions(prisoner.getStrategy(), 512);
     }
 
-    public void generateRandomDecisions(ArrayList<Decision> arr, int amount) {
+    private void generateRandomDecisions(ArrayList<Decision> arr, int amount) {
         for (int i = 0; i < amount; ++i) {
             arr.add(Decision.values()[secureRandom.nextInt(Decision.values().length)]);
         }
@@ -42,7 +38,7 @@ public class PrisonerController implements Comparable<PrisonerController> {
         return prisoner;
     }
 
-    public Decision determineDecision() {
+    Decision determineDecision() {
         int indexStep = 512;
         int indexOfDecisionTop = 511;
         int indexOfDecisionBottom = 0;
@@ -63,33 +59,30 @@ public class PrisonerController implements Comparable<PrisonerController> {
         return BETRAYED; //never reached
     }
 
-    public void addMove(Decision playerOne, Decision playerTwo, Decision playerThree) {
+    void addMove(Decision playerOne, Decision playerTwo, Decision playerThree) {
         ArrayList<Decision> newList = new ArrayList<Decision>(3);
         newList.addAll(prisoner.getLastThreeMoves().subList(3, 9));
         newList.addAll(Arrays.asList(playerOne, playerTwo, playerThree));
         prisoner.setLastThreeMoves(newList);
     }
 
-    public void addScore(double score) {
+    void addScore(double score) {
         prisoner.setScore(prisoner.getScore() + score);
     }
 
-    public void updateScore(int divider) {
+    void updateScore(int divider) {
         prisoner.setScore(prisoner.getScore() / divider);
     }
 
-    public void setPrisonerCrossoverPartnersAmount(int partnersAmount) {
+    void setPrisonerCrossoverPartnersAmount(int partnersAmount) {
         prisoner.setCrossoverPartnersAmount(partnersAmount);
     }
 
-    public boolean checkIfWaitingForCrossoverPartner() {
-        if (prisoner.getCrossoverPartnersAmount() > 0) {
-            return true;
-        }
-        return false;
+    boolean checkIfWaitingForCrossoverPartner() {
+        return (prisoner.getCrossoverPartnersAmount() > 0);
     }
 
-    public void decrementPrisonerCrossoverPartnersAmount() {
+    void decrementPrisonerCrossoverPartnersAmount() {
         prisoner.setCrossoverPartnersAmount(prisoner.getCrossoverPartnersAmount() - 1);
     }
 
@@ -99,5 +92,23 @@ public class PrisonerController implements Comparable<PrisonerController> {
         else if (prisoner.getScore() > prisonerController.getPrisoner().getScore())
             return -1;
         return 0;
+    }
+
+    ArrayList<Decision> getChromosome() {
+        ArrayList<Decision> chromosome = new ArrayList<>(521);
+        chromosome.addAll(prisoner.getLastThreeMoves());
+        chromosome.addAll(prisoner.getStrategy());
+        return chromosome;
+    }
+
+    private void setChromosome(ArrayList<Decision> chromosome) {
+        prisoner.setLastThreeMoves(new ArrayList<Decision>(chromosome.subList(0, 8)));
+        prisoner.setStrategy(new ArrayList<Decision>(chromosome.subList(9, 520)));
+    }
+
+    void injectToChromosome(ArrayList<Decision> chromosomeFragment, int fromIndex) {
+        ArrayList<Decision> chromosome = getChromosome();
+        chromosome.addAll(fromIndex, chromosomeFragment);
+        setChromosome(chromosome);
     }
 }

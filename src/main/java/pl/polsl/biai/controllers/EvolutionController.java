@@ -1,5 +1,6 @@
 package pl.polsl.biai.controllers;
 
+import pl.polsl.biai.models.Decision;
 import pl.polsl.biai.models.Evolution;
 import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.EvolutionView;
@@ -41,12 +42,10 @@ public class EvolutionController {
             //krzyżowanie, mutacja
             ArrayList<PrisonerController> nextGeneration = new ArrayList<PrisonerController>(populationSize);
             for (int j = 0; j < populationSize; ) {
-//              nextGeneration.add(
-//                        crossover(evolution.getPopulation().get(i),
-//                                randomlySelectCrossoverPartner(),
-//                                crossoverType,
-//                                mutationMode)
-//              );
+                nextGeneration.add(
+                        crossover(evolution.getPopulation().get(i),
+                                randomlySelectCrossoverPartner())
+                );
                 evolution.getPopulation().get(j).decrementPrisonerCrossoverPartnersAmount();
                 if (!(evolution.getPopulation().get(j).checkIfWaitingForCrossoverPartner())) {
                     ++j;
@@ -56,6 +55,41 @@ public class EvolutionController {
             evolution.setPopulation(nextGeneration);
         }
     }
+
+    private PrisonerController randomlySelectCrossoverPartner() {
+        return null;
+    }
+
+    private PrisonerController crossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
+        switch (crossoverType) {
+            case 1:
+                return multiPointCrossover(firstPrisoner, secondPrisoner);
+            case 0:
+            default:
+                return onePointCrossover(firstPrisoner, secondPrisoner);
+        }
+    }
+
+    private PrisonerController onePointCrossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
+        PrisonerController child = new PrisonerController();
+        child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(0, 260)), 0);
+        child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList(261, 520)), 261);
+        return child;
+    }
+
+    //TODO:
+    //change this method to use additional param - pointsAmount
+    private PrisonerController multiPointCrossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
+        PrisonerController child = new PrisonerController();
+        for (int i = 0; i < 51; ++i) {
+            child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(i*10, (i+1)*10-1)), i*10);
+            child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList((i+1)*10, (i+2)*10-1)), (i+1)*10);
+        }
+        //521 is a prime number - loop setting only indexes from 0 to 519; so there is setting the last one
+        child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(520, 520)), 520);
+        return child;
+    }
+
 
 //PrisonerController middlePrisoner = population.get(population.size() / 2);
 //double deviationPlayer = pow(middlePrisoner.getPrisoner().getScore() - calculateAverageOfPopulationScore(population),2);
@@ -80,7 +114,10 @@ public class EvolutionController {
 
     private void generatePopulation(int populationSize) {
         for (int i = 0; i < populationSize; ++i) {
-            evolution.addToPopulation(new PrisonerController());
+            PrisonerController newPrisoner = new PrisonerController();
+            newPrisoner.generateLastThreeMoves();
+            newPrisoner.generateStrategy();
+            evolution.addToPopulation(newPrisoner);
         }
     }
 

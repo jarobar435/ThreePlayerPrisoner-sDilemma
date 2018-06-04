@@ -1,9 +1,7 @@
 package pl.polsl.biai.views;
 
 import pl.polsl.biai.controllers.PrisonerController;
-import pl.polsl.biai.models.Decision;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class EvolutionView {
@@ -33,9 +31,9 @@ public class EvolutionView {
     }
 
     public void showScoresAfterGeneration(ArrayList<PrisonerController> prisonerControllers) {
-        for(int i = 0; i < prisonerControllers.size(); ++i) {
+        for (int i = 0; i < prisonerControllers.size(); ++i) {
             System.out.println(
-                "Prisoner " + (i + 1) + " avg. score: " + prisonerControllers.get(i).getPrisoner().getScore());
+                    "Prisoner " + (i + 1) + " avg. score: " + prisonerControllers.get(i).getPrisoner().getScore());
         }
     }
 }
