@@ -6,6 +6,7 @@ import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.EvolutionView;
 
 import java.lang.reflect.Array;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -13,6 +14,8 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class EvolutionController {
+
+    private static final SecureRandom secureRandom = new SecureRandom();
 
     private final Evolution evolution = new Evolution();
     private final EvolutionView evolutionView = new EvolutionView();
@@ -24,7 +27,7 @@ public class EvolutionController {
     private int mutationMode;
     private int duelMode;
 
-    public void beginEvolution() {
+    void beginEvolution() {
         generatePopulation(populationSize);
         evolutionView.confirmPopulationGenerated(populationSize);
         for (int i = 0; i < generationsAmount; ++i) {
@@ -39,25 +42,25 @@ public class EvolutionController {
             sortPopulationDescendingOrder();
             determineCrossoverPartnersAmount();
 
-            //krzyżowanie, mutacja
             ArrayList<PrisonerController> nextGeneration = new ArrayList<PrisonerController>(populationSize);
-            for (int j = 0; j < populationSize; ) {
+            for (int j = 0; j < populationSize; ++j) {
                 nextGeneration.add(
-                        crossover(evolution.getPopulation().get(i),
-                                randomlySelectCrossoverPartner())
+                        crossover(evolution.getPopulation().get(j),
+                                randomlySelectCrossoverPartner(j))
                 );
                 evolution.getPopulation().get(j).decrementPrisonerCrossoverPartnersAmount();
-                if (!(evolution.getPopulation().get(j).checkIfWaitingForCrossoverPartner())) {
-                    ++j;
-                }
             }
             evolution.getPopulation().clear();
             evolution.setPopulation(nextGeneration);
         }
     }
 
-    private PrisonerController randomlySelectCrossoverPartner() {
-        return null;
+    private PrisonerController randomlySelectCrossoverPartner(int secondParent) {
+        PrisonerController randomPrisoner = new PrisonerController();
+        while (!randomPrisoner.checkIfWaitingForCrossoverPartner() && randomPrisoner!=evolution.getPopulation().get(secondParent)) {
+            randomPrisoner = evolution.getPopulation().get(secureRandom.nextInt(evolution.getPopulation().size()));
+        }
+        return randomPrisoner;
     }
 
     private PrisonerController crossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
@@ -72,8 +75,8 @@ public class EvolutionController {
 
     private PrisonerController onePointCrossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
         PrisonerController child = new PrisonerController();
-        child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(0, 260)), 0);
-        child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList(261, 520)), 261);
+        child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(0, 261)), 0);
+        child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList(261, 521)), 261);
         return child;
     }
 
@@ -82,8 +85,8 @@ public class EvolutionController {
     private PrisonerController multiPointCrossover(PrisonerController firstPrisoner, PrisonerController secondPrisoner) {
         PrisonerController child = new PrisonerController();
         for (int i = 0; i < 51; ++i) {
-            child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(i*10, (i+1)*10-1)), i*10);
-            child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList((i+1)*10, (i+2)*10-1)), (i+1)*10);
+            child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(i * 10, (i + 1) * 10 - 1)), i * 10);
+            child.injectToChromosome(new ArrayList<Decision>(secondPrisoner.getChromosome().subList((i + 1) * 10, (i + 2) * 10 - 1)), (i + 1) * 10);
         }
         //521 is a prime number - loop setting only indexes from 0 to 519; so there is setting the last one
         child.injectToChromosome(new ArrayList<Decision>(firstPrisoner.getChromosome().subList(520, 520)), 520);
@@ -121,26 +124,26 @@ public class EvolutionController {
         }
     }
 
+    //this can be simplified by using global fields like populationSize
     private void createGames() {
         int combElemAmount = 3;
-        int arraySize = evolution.getPopulation().size();
         ArrayList<PrisonerController> temp = new ArrayList<PrisonerController>();
-        pairRecursively(evolution.getPopulation(), temp, 0, arraySize - 1, 0, combElemAmount);
+        pairRecursively(evolution.getPopulation(), temp, 0, 0, combElemAmount);
     }
 
-    private void pairRecursively(ArrayList<PrisonerController> population, ArrayList<PrisonerController> temp, int start, int end,
+    private void pairRecursively(ArrayList<PrisonerController> population, ArrayList<PrisonerController> temp, int start,
                                  int index, int combElemAmount) {
         if (index == combElemAmount) {
             evolution.addGame(new GameController());
             for (int i = 0; i < combElemAmount; ++i)
-                evolution.getGames().get(evolution.getGames().size() - 1)     //getting last added game
-                        .addGameMember(temp.get(i));    //adding members to it
+                evolution.getGames().get(evolution.getGames().size() - 1)
+                        .addGameMember(temp.get(i));
             return;
         }
 
-        for (int i = start; i <= end && end - i + 1 >= combElemAmount - index; ++i) {
+        for (int i = start; i <= populationSize - 1 && populationSize - i >= combElemAmount - index; ++i) {
             temp.add(index, population.get(i));
-            pairRecursively(population, temp, i + 1, end, index + 1, combElemAmount);
+            pairRecursively(population, temp, i + 1, index + 1, combElemAmount);
         }
     }
 
@@ -178,8 +181,8 @@ public class EvolutionController {
         for (i = 0; i < Math.round(populationSize / 3.0); ++i) {
             evolution.getPopulation().get(i).setPrisonerCrossoverPartnersAmount(2);
         }
-        for (int j = 2 * i; j < populationSize; ++j) {
-            evolution.getPopulation().get(j).setPrisonerCrossoverPartnersAmount(1);
+        for (int j = 2 * i; j < populationSize; ++j, ++i) {
+            evolution.getPopulation().get(i).setPrisonerCrossoverPartnersAmount(1);
         }
     }
 

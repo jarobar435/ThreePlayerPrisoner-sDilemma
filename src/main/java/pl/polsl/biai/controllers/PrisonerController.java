@@ -4,7 +4,6 @@ import pl.polsl.biai.models.Decision;
 import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.PrisonerView;
 
-import java.lang.reflect.Array;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,8 +101,8 @@ public class PrisonerController implements Comparable<PrisonerController> {
     }
 
     private void setChromosome(ArrayList<Decision> chromosome) {
-        prisoner.setLastThreeMoves(new ArrayList<Decision>(chromosome.subList(0, 8)));
-        prisoner.setStrategy(new ArrayList<Decision>(chromosome.subList(9, 520)));
+        prisoner.setLastThreeMoves(new ArrayList<Decision>(chromosome.subList(0, 9)));
+        prisoner.setStrategy(new ArrayList<Decision>(chromosome.subList(9, chromosome.size())));
     }
 
     void injectToChromosome(ArrayList<Decision> chromosomeFragment, int fromIndex) {
