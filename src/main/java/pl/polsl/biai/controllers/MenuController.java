@@ -8,7 +8,7 @@ public class MenuController {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    private final MenuView menuView = new MenuView();
+    private static final MenuView menuView = new MenuView();
 
     private final EvolutionController evolutionController = new EvolutionController();
 

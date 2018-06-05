@@ -2,7 +2,6 @@ package pl.polsl.biai.controllers;
 
 import pl.polsl.biai.models.Decision;
 import pl.polsl.biai.models.Prisoner;
-import pl.polsl.biai.views.PrisonerView;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -14,8 +13,6 @@ import static pl.polsl.biai.models.Decision.COLLABORATED;
 public class PrisonerController implements Comparable<PrisonerController> {
 
     private static final SecureRandom secureRandom = new SecureRandom();
-
-    private final PrisonerView prisonerView = new PrisonerView();
 
     private Prisoner prisoner = new Prisoner();
 

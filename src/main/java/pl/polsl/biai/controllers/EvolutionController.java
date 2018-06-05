@@ -2,18 +2,22 @@ package pl.polsl.biai.controllers;
 
 import pl.polsl.biai.models.Decision;
 import pl.polsl.biai.models.Evolution;
+import pl.polsl.biai.models.Prisoner;
 import pl.polsl.biai.views.EvolutionView;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 
 class EvolutionController {
 
+    private final Scanner scanner = new Scanner(System.in);
     private static final SecureRandom secureRandom = new SecureRandom();
 
     private final Evolution evolution = new Evolution();
     private final EvolutionView evolutionView = new EvolutionView();
+    private DuelController duelController = new DuelController();
 
     private int populationSize;
     private int gamesInPair;
@@ -198,14 +202,44 @@ class EvolutionController {
     }
 
     private void preDuelMode() {
-        if(duelMode == 1) {
-            System.out.println("Duel mode not implemented yet.");
+        if (duelMode == 1) {
+            PrisonerController user = new PrisonerController();
+            duelController.getDuelView().printDuelModeHeader();
+            addDuelMembers(user);
+            duelController.getDuelView().printPreEvolutionDuelSettings(gamesInPair);
+            for (int i = 0; i < gamesInPair; ++i) {
+                duelController.getDuelView().printNextMoveEnquiry();
+                duelController.getGameController().playGameRoundWithUser(Decision.values()[scanner.nextInt()]);
+            }
+            duelController.updateDuelScores(gamesInPair);
+            duelController.printDuelScores();
+            duelController.resetPopulationScores();
+            scanner.next();
         }
     }
 
     private void postDuelMode() {
-        if(duelMode == 1) {
-            System.out.println("Duel mode not implemented yet.");
+        if (duelMode == 1) {
+            PrisonerController user = new PrisonerController();
+            duelController.getDuelView().printDuelModeHeader();
+            addDuelMembers(user);
+            duelController.getDuelView().printPostEvolutionDuelSettings(gamesInPair);
+            for (int i = 0; i < gamesInPair; ++i) {
+                duelController.getDuelView().printNextMoveEnquiry();
+                duelController.getGameController().playGameRoundWithUser(Decision.values()[scanner.nextInt()]);
+            }
+            duelController.updateDuelScores(gamesInPair);
+            duelController.printDuelScores();
+            duelController.resetPopulationScores();
+            scanner.next();
+        }
+    }
+
+    private void addDuelMembers(PrisonerController user) {
+        user.generateLastThreeMoves();
+        duelController.getGameController().addGameMember(user);
+        for (int i = 0; i < 2; ++i) {
+            duelController.getGameController().addGameMember(evolution.getPopulation().get(i));
         }
     }
 
