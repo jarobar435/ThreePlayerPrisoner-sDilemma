@@ -39,6 +39,7 @@ class EvolutionController {
             clearGamesList();
             updateScores();
             evolutionView.showScoresAfterGeneration(evolution.getPopulation());
+            printOverallScore();
             sortPopulationDescendingOrder();
             determineCrossoverPartnersAmount();
             runCrossover();
@@ -241,6 +242,14 @@ class EvolutionController {
         for (int i = 0; i < 2; ++i) {
             duelController.getGameController().addGameMember(evolution.getPopulation().get(i));
         }
+    }
+
+    private void printOverallScore() {
+        double overallScore = 0;
+        for(PrisonerController prisonerController : evolution.getPopulation()) {
+            overallScore += prisonerController.getPrisoner().getScore();
+        }
+        System.out.println("OVERALL AVG SCORE: " + overallScore/populationSize + ".");
     }
 
     void setPopulationSize(int populationSize) {
