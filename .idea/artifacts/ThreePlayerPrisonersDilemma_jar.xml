@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ThreePlayerPrisonersDilemma:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ThreePlayerPrisonersDilemma_jar</output-path>
+    <root id="archive" name="ThreePlayerPrisonersDilemma.jar">
+      <element id="module-output" name="ThreePlayerPrisonersDilemma" />
+    </root>
+  </artifact>
+</component>
